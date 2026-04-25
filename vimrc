@@ -6,6 +6,7 @@ call plug#begin('~/.vim/plugged')
 " Плагины для Python
 Plug 'vim-python/python-syntax'     " Улучшенная подсветка Python
 Plug 'dense-analysis/ale'           " Линтер (flake8, pylint)
+Plug 'jiangmiao/auto-pairs'         " Умные скобки
 
 call plug#end()
 " === КОНЕЦ СЕКЦИИ VIM-PLUG ===
