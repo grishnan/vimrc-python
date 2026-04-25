@@ -101,5 +101,19 @@ au BufNewFile *.py call AddPythonShebang()
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+
+" === АВТОДОПОЛНЕНИЕ TAB ===
+" Включаем автодополнение по Tab
+function! TabCompletion()
+    if col('.') > 1 && getline('.')[col('.')-2] =~ '\a'
+        return "\<C-P>"
+    else
+        return "\<Tab>"
+    endif
+endfunction
+inoremap <Tab> <C-R>=TabCompletion()<CR>
+
+" Включаем словарь из текущего файла
+set complete=.,w,b,u,t,i
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
