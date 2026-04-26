@@ -7,9 +7,10 @@ let mapleader = " "
 call plug#begin('~/.vim/plugged')
 
 " Плагины для Python
-Plug 'vim-python/python-syntax'     " Улучшенная подсветка Python
-Plug 'dense-analysis/ale'           " Линтер (flake8, pylint)
-Plug 'jiangmiao/auto-pairs'         " Умные скобки
+Plug 'vim-python/python-syntax'                 " Улучшенная подсветка Python
+Plug 'dense-analysis/ale'                       " Линтер (flake8, pylint)
+Plug 'jiangmiao/auto-pairs'                     " Умные скобки
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " Completion-движок
 
 call plug#end()
 " === КОНЕЦ СЕКЦИИ VIM-PLUG ===
@@ -153,3 +154,9 @@ endfunction
 inoremap <Tab> <C-R>=TabCompletion()<CR>
 
 set complete=.,w,b,u,t,i
+
+" === Цвета для popup-меню coc.nvim ===
+highlight Pmenu guibg=black ctermbg=0 guifg=green ctermfg=2
+highlight PmenuSel guibg=green ctermbg=2 guifg=black ctermfg=0
+highlight PmenuSbar guibg=gray ctermbg=8
+highlight PmenuThumb guibg=white ctermbg=15
