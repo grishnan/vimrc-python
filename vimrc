@@ -143,17 +143,10 @@ autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 
-" === АВТОДОПОЛНЕНИЕ TAB ===
-function! TabCompletion()
-    if col('.') > 1 && getline('.')[col('.')-2] =~ '\a'
-        return "\<C-P>"
-    else
-        return "\<Tab>"
-    endif
-endfunction
-inoremap <Tab> <C-R>=TabCompletion()<CR>
-
-set complete=.,w,b,u,t,i
+" === coc.nvim автодополнение ===
+inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
+inoremap <silent><expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 " === Цвета для popup-меню coc.nvim ===
 highlight Pmenu guibg=black ctermbg=0 guifg=green ctermfg=2
