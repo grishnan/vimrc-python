@@ -8,7 +8,6 @@ call plug#begin('~/.vim/plugged')
 
 " Плагины для Python
 Plug 'vim-python/python-syntax'                 " Улучшенная подсветка Python
-Plug 'dense-analysis/ale'                       " Линтер (flake8, pylint)
 Plug 'jiangmiao/auto-pairs'                     " Умные скобки
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Completion-движок
 
@@ -29,6 +28,7 @@ set shiftwidth=4
 set expandtab
 set softtabstop=4
 set backspace=indent,eol,start
+set updatetime=300
 
 " === Поиск ===
 set hlsearch
@@ -42,6 +42,7 @@ set showcmd
 set wildmenu
 set wildignore=*.pyc,*.pyo,*.egg-info,__pycache__
 set laststatus=2
+set signcolumn=yes
 
 " === Кодировка ===
 set encoding=utf-8
@@ -51,42 +52,6 @@ set fileencoding=utf-8
 au BufNewFile,BufRead *.py set textwidth=79
 au BufNewFile,BufRead *.py set colorcolumn=79
 au BufNewFile,BufRead *.py set formatoptions+=o
-
-" === НАСТРОЙКИ ALE (тихий режим + popup по хоткею) ===
-let g:ale_linters = {'python': ['flake8', 'pylint']}
-let g:ale_fixers = {'python': []}
-let g:ale_python_flake8_options = '--max-line-length=79'
-let g:ale_python_pylint_options = '--max-line-length=79'
-
-" --- Полностью убираем навязчивость ---
-let g:ale_sign_column_always = 0
-let g:ale_virtualtext_cursor = 0
-let g:ale_echo_cursor = 0
-let g:ale_echo_msg_format = '[%linter%] %s'
-
-" --- Линтинг только когда ты хочешь ---
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_save = 1
-
-" --- Popup окно с ошибкой ---
-let g:ale_floating_preview = 1
-
-" --- Список ошибок не лезет сам ---
-let g:ale_open_list = 0
-let g:ale_keep_list_window_open = 0
-
-" --- Отключаем мусорные директории ---
-let g:ale_pattern_options = {
-\   '\.venv/': {'ale_enabled': 0},
-\   'venv/': {'ale_enabled': 0},
-\   '\.cache/': {'ale_enabled': 0},
-\   '__pycache__/': {'ale_enabled': 0},
-\}
-
-" --- Убираем залипание popup от ALE ---
-let g:ale_close_preview_on_insert = 1
 
 " Улучшенная подсветка Python
 let g:python_highlight_all = 1
@@ -108,20 +73,6 @@ nnoremap <F8> :!echo "Use 'c' to continue, 'n' for next, 'p var' to print"<CR>
 
 " Ctrl+P - быстрый запуск без очистки
 nnoremap <C-p> :w<CR>:!python3 %<CR>
-
-" === ALE HOTKEYS (удобная схема) ===
-" Показать ошибку под курсором (главная клавиша)
-nnoremap <silent> K :ALEDetail<CR>
-
-" Следующая / предыдущая ошибка
-nnoremap <silent> ]e :ALENext<CR>
-nnoremap <silent> [e :ALEPrevious<CR>
-
-" Открыть список ошибок (как Problems в IDE)
-nnoremap <leader>e :ALEToggle<CR>
-
-" Принудительно запустить линтер
-nnoremap <leader>r :ALELint<CR>
 
 " === Статус-строка с информацией о Python ===
 set statusline=%F%m%r%h%w\ [Python]\ [%Y]\ [%l/%L,\ %c]
@@ -148,8 +99,31 @@ inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
 inoremap <silent><expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
+" Ctrl+Space — вручную вызвать автодополнение
+inoremap <silent><expr> <C-Space> coc#refresh()
+
 " === Цвета для popup-меню coc.nvim ===
 highlight Pmenu guibg=black ctermbg=0 guifg=green ctermfg=2
 highlight PmenuSel guibg=green ctermbg=2 guifg=black ctermfg=0
 highlight PmenuSbar guibg=gray ctermbg=8
 highlight PmenuThumb guibg=white ctermbg=15
+
+" === coc.nvim: навигация и диагностика ===
+" Документация (hover)
+nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+
+" Перейти к определению
+nnoremap gd <Plug>(coc-definition)
+
+" Следующая / предыдущая ошибка
+nnoremap ]e <Plug>(coc-diagnostic-next)
+nnoremap [e <Plug>(coc-diagnostic-prev)
+
+" Список ошибок
+nnoremap <leader>e :CocDiagnostics<CR>
+
+" Форматирование
+nnoremap <leader>f :call CocAction('format')<CR>
+
+" форматирование по сохранению
+autocmd BufWritePre *.py :call CocAction('format')
